@@ -1,28 +1,29 @@
 require("dotenv").config();
-const fs = require("fs");
-const path = require("path");
+// const fs = require("fs");
+// const path = require("path");
 const express = require("express");
 const app = express();
 const request = require("request");
 const morgan = require("morgan");
-const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+// const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 
 const port = process.env.PORT;
-const csvWriter = createCsvWriter({
-  path: __dirname + "/file.csv",
-  header: [
-    { id: "name", title: "NAME" },
-    { id: "number", title: "NUMBER" },
-    { id: "date", title: "DATELOG" },
-  ],
-});
 
-let assessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), {
-  flags: "a",
-});
+// const csvWriter = createCsvWriter({
+//   path: __dirname + "/file.csv",
+//   header: [
+//     { id: "name", title: "NAME" },
+//     { id: "number", title: "NUMBER" },
+//     { id: "date", title: "DATELOG" },
+//   ],
+// });
+
+// let assessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), {
+//   flags: "a",
+// });
 
 app.use(morgan("combined"));
-app.use(morgan("combined", { stream: assessLogStream }));
+// app.use(morgan("combined", { stream: assessLogStream }));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -32,33 +33,33 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/log", (req, res) => {
-  filePath = path.join(__dirname, "access.log");
-  fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
-    if (!err) {
-      console.log("received data: " + data);
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.write(data);
-      res.end();
-    } else {
-      console.log(err);
-    }
-  });
-});
+// app.get("/log", (req, res) => {
+//   filePath = path.join(__dirname, "access.log");
+//   fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
+//     if (!err) {
+//       console.log("received data: " + data);
+//       res.writeHead(200, { "Content-Type": "text/plain" });
+//       res.write(data);
+//       res.end();
+//     } else {
+//       console.log(err);
+//     }
+//   });
+// });
 
-app.get("/user", (req, res) => {
-  filePath = path.join(__dirname, "file.csv");
-  fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
-    if (!err) {
-      console.log("received data: " + data);
-      res.writeHead(200, { "Content-Type": "text/plain" });
-      res.write(data);
-      res.end();
-    } else {
-      console.log(err);
-    }
-  });
-});
+// app.get("/user", (req, res) => {
+//   filePath = path.join(__dirname, "file.csv");
+//   fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
+//     if (!err) {
+//       console.log("received data: " + data);
+//       res.writeHead(200, { "Content-Type": "text/plain" });
+//       res.write(data);
+//       res.end();
+//     } else {
+//       console.log(err);
+//     }
+//   });
+// });
 
 app.post("/wsp", async (req, res, next) => {
   let dateTime = new Date();
@@ -132,11 +133,11 @@ app.post("/wsp", async (req, res, next) => {
         }
       }
     );
-    await csvWriter
-      .writeRecords(record) // returns a promise
-      .then(() => {
-        console.log("...Done Writing In CSV" + record);
-      });
+    // await csvWriter
+    //   .writeRecords(record) // returns a promise
+    //   .then(() => {
+    //     console.log("...Done Writing In CSV" + record);
+    //   });
     res.status(201).json(finalRespObj);
   } catch (error) {
     console.log(error);
