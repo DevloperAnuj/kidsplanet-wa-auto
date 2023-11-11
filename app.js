@@ -126,14 +126,14 @@ app.post("/wsp", (req, res, next) => {
       }
     )
     .then(function (response) {
-      // console.log(response);
+      console.log(response);
       res.send({
         status: "200",
         response: response.data,
       });
     })
     .catch(function (error) {
-      // console.log(error);
+      console.log(error);
       res.send({
         status: "407",
         error: error,
