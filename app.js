@@ -114,32 +114,30 @@ app.post("/wsp", (req, res, next) => {
 
   let finalRespObj = {};
 
-  axios
-    .post(
-      `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
-      setBody,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.TOKEN}`,
-        },
-      }
-    )
-    .then(function (response) {
-      console.log(response);
-      res.send({
-        status: "200",
-        response: response.data,
+  try {
+    axios
+      .post(
+        `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
+        setBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.TOKEN}`,
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        finalRespObj = { data: response.data };
+      })
+      .catch(function (error) {
+        console.log(error);
+        finalRespObj = { error: error };
       });
-    })
-    .catch(function (error) {
-      console.log(error);
-      res.send({
-        status: "407",
-        error: error,
-      });
-    });
-
+    res.status(201).json(finalRespObj);
+  } catch (error) {
+    res.status(407).json(finalRespObj);
+  }
   next();
 });
 
