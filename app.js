@@ -3,7 +3,6 @@ require("dotenv").config();
 // const path = require("path");
 const express = require("express");
 const app = express();
-const request = require("request");
 const morgan = require("morgan");
 // const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 
@@ -96,13 +95,14 @@ app.post("/wsp", async (req, res, next) => {
       ],
     },
   };
-  const record = [
-    {
-      name: req.body["user_meta"]["nickname"][0],
-      number: `91${req.body["user_meta"]["phone"][0]}`,
-      date: `${dateTime}`,
-    },
-  ];
+
+  // const record = [
+  //   {
+  //     name: req.body["user_meta"]["nickname"][0],
+  //     number: `91${req.body["user_meta"]["phone"][0]}`,
+  //     date: `${dateTime}`,
+  //   },
+  // ];
 
   // console.log(req.body["user_meta"]);
   // console.log("=======================================");
@@ -113,36 +113,26 @@ app.post("/wsp", async (req, res, next) => {
 
   let finalRespObj = {};
 
-  try {
-    await request.post(
+  await axios
+    .post(
+      `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
+      JSON.stringify(setBody),
       {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${process.env.TOKEN}`,
         },
-        url: `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
-        body: JSON.stringify(setBody),
-      },
-      (err, resp, body) => {
-        if (!err && resp.statusCode === 200) {
-          console.log({ postBody: setBody, response: body });
-          finalRespObj = { postBody: setBody, response: body };
-        } else {
-          console.log(err);
-          finalRespObj = { postBody: setBody, error: err };
-        }
       }
-    );
-    // await csvWriter
-    //   .writeRecords(record) // returns a promise
-    //   .then(() => {
-    //     console.log("...Done Writing In CSV" + record);
-    //   });
-    res.status(201).json(finalRespObj);
-  } catch (error) {
-    console.log(error);
-    res.status(407).json(finalRespObj);
-  }
+    )
+    .then(function (response) {
+      console.log(response);
+      res.status(201).json(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(407).json(error);
+    });
+
   next();
 });
 
