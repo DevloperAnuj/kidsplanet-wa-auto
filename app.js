@@ -125,13 +125,19 @@ app.post("/wsp", async (req, res, next) => {
         },
       }
     )
-    .then(async function (response) {
+    .then(function (response) {
       console.log(response);
-      await res.status(201).json(response);
+      res.send({
+        status: "200",
+        response: response,
+      });
     })
-    .catch(async function (error) {
+    .catch(function (error) {
       console.log(error);
-      await res.status(407).json(error);
+      res.send({
+        status: "407",
+        error: error,
+      });
     });
 
   next();
