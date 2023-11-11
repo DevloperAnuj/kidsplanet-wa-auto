@@ -117,7 +117,7 @@ app.post("/wsp", async (req, res, next) => {
   await axios
     .post(
       `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
-      JSON.stringify(setBody),
+      setBody,
       {
         headers: {
           "Content-Type": "application/json",
