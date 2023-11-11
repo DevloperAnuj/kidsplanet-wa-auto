@@ -112,7 +112,7 @@ app.post("/wsp", (req, res, next) => {
   // console.log(req.body["user_meta"]["phone"][0]);
   // console.log(membership);
 
-  let finalRespObj = {};
+  var finalRespObj = {};
 
   try {
     axios
