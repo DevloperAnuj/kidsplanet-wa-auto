@@ -61,7 +61,7 @@ app.get("/", (req, res) => {
 //   });
 // });
 
-app.post("/wsp", async (req, res, next) => {
+app.post("/wsp", (req, res, next) => {
   let dateTime = new Date();
   const membership =
     req.body["user_meta"]["pmpro_CardType"][0] === "" ? "Free" : "Premium";
@@ -114,7 +114,7 @@ app.post("/wsp", async (req, res, next) => {
 
   let finalRespObj = {};
 
-  await axios
+  axios
     .post(
       `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
       setBody,
@@ -126,14 +126,14 @@ app.post("/wsp", async (req, res, next) => {
       }
     )
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
       res.send({
         status: "200",
-        response: response,
+        response: response.data,
       });
     })
     .catch(function (error) {
-      console.log(error);
+      // console.log(error);
       res.send({
         status: "407",
         error: error,
