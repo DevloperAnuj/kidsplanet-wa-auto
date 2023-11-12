@@ -61,6 +61,11 @@ app.get("/", (req, res) => {
 //   });
 // });
 
+app.post("/submit", (req, res, next) => {
+  console.log(req.body);
+  res.status(201).json({ success: true });
+});
+
 app.post("/wsp", (req, res, next) => {
   let dateTime = new Date();
   const membership =
