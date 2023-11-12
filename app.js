@@ -22,9 +22,10 @@ const port = process.env.PORT;
 //   flags: "a",
 // });
 
-app.use(morgan("combined"));
+app.use(morgan("dev"));
 // app.use(morgan("combined", { stream: assessLogStream }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   console.log("Its Get Request");
@@ -61,9 +62,57 @@ app.get("/", (req, res) => {
 //   });
 // });
 
+//Getting Whatsapp Message After Subcribe Free NewsLetter
 app.post("/submit", (req, res, next) => {
-  reqBody = JSON.stringify(req.body);
-  res.status(200).json({ success: true, data: reqBody });
+  setBody = {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: `91${req.body["Phone"]}`,
+    type: "template",
+    template: {
+      name: "kids_reg",
+      language: {
+        code: "en",
+      },
+      components: [
+        {
+          type: "body",
+          parameters: [
+            {
+              type: "text",
+              text: req.body["Name"],
+            },
+            {
+              type: "text",
+              text: "Free NewsLetter",
+            },
+          ],
+        },
+      ],
+    },
+  };
+  try {
+    axios
+      .post(
+        `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
+        setBody,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.TOKEN}`,
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    res.status(200).json({ success: true });
+  } catch (error) {
+    res.status(407).json({ error: error });
+  }
 });
 
 app.post("/wsp", (req, res, next) => {
@@ -101,21 +150,6 @@ app.post("/wsp", (req, res, next) => {
       ],
     },
   };
-
-  // const record = [
-  //   {
-  //     name: req.body["user_meta"]["nickname"][0],
-  //     number: `91${req.body["user_meta"]["phone"][0]}`,
-  //     date: `${dateTime}`,
-  //   },
-  // ];
-
-  // console.log(req.body["user_meta"]);
-  // console.log("=======================================");
-  // console.log(req.body["user_meta"]["nickname"][0]);
-  // console.log(req.body["data"]["user_email"]);
-  // console.log(req.body["user_meta"]["phone"][0]);
-  // console.log(membership);
 
   var finalRespObj = {};
 
