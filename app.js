@@ -63,7 +63,7 @@ app.get("/", (req, res) => {
 
 app.post("/submit", (req, res, next) => {
   reqBody = JSON.stringify(req.body);
-  res.status(201).json({ success: true, data: reqBody });
+  res.status(200).json({ success: true, data: reqBody });
 });
 
 app.post("/wsp", (req, res, next) => {
