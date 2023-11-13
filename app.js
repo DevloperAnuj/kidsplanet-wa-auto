@@ -34,11 +34,24 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/tokan", (req, res) => {
-  console.log("Its Tokan Request");
-  res.status(200).json({
-    success: true,
-  });
+app.get("/webhook", (req, res) => {
+  console.log("Its Webhook Request");
+  let mode = req.query["hub.mode"];
+  let challenge = req.query["hub.challenge"];
+  let tokan = req.query["hub.verify_token"];
+  const myToken = "planetkids";
+  if (mode && tokan) {
+    if (mode === "subscribe" && tokan === myToken) {
+      res.status(200).send(challenge);
+    } else {
+      res.status(403);
+    }
+  }
+});
+
+app.post("/webhook", (req, res) => {
+  let body_param = req.body;
+  console.log(JSON.stringify(body_param, null, 2));
 });
 
 // app.get("/log", (req, res) => {
@@ -115,7 +128,7 @@ app.post("/submit", async (req, res, next) => {
       res.status(200).json({ success: response.data });
     })
     .catch(function (error) {
-      // console.log(error);
+      console.log(error);
       res.status(407).send({ error: error });
     });
   next();
