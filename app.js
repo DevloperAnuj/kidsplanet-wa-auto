@@ -35,11 +35,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/webhook", (req, res, next) => {
-  console.log(req.body);
   console.log("==============");
+  console.log(req.body);
   if (
     req.query["hub.mode"] == "subscribe" &&
-    req.query["hub.verify_token"] == "token"
+    req.query["hub.verify_token"] == process.env.WEBHOOK
   ) {
     res.send(req.query["hub.challenge"]);
   } else {
