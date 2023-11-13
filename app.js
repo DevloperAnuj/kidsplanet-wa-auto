@@ -35,7 +35,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/webhook", (req, res, next) => {
-  console.log("Its Webhook Request");
+  console.log(req.body);
+  console.log("==============");
   if (
     req.query["hub.mode"] == "subscribe" &&
     req.query["hub.verify_token"] == "token"
