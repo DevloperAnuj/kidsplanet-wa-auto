@@ -36,16 +36,13 @@ app.get("/", (req, res) => {
 
 app.get("/webhook", (req, res, next) => {
   console.log("Its Webhook Request");
-  const mode = req.query["hub.mode"];
-  const challenge = req.query["hub.challenge"];
-  const tokan = req.query["hub.verify_token"];
-  const myToken = "planetkids";
-  if (mode && tokan) {
-    if (mode === "subscribe" && tokan === myToken) {
-      res.status(200).send(challenge);
-    } else {
-      res.status(403);
-    }
+  if (
+    req.query["hub.mode"] == "subscribe" &&
+    req.query["hub.verify_token"] == token
+  ) {
+    res.send(req.query["hub.challenge"]);
+  } else {
+    res.sendStatus(400);
   }
   next();
 });
