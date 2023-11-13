@@ -36,9 +36,9 @@ app.get("/", (req, res) => {
 
 app.get("/webhook", (req, res, next) => {
   console.log("Its Webhook Request");
-  let mode = req.query["hub.mode"];
-  let challenge = req.query["hub.challenge"];
-  let tokan = req.query["hub.verify_token"];
+  const mode = req.query["hub.mode"];
+  const challenge = req.query["hub.challenge"];
+  const tokan = req.query["hub.verify_token"];
   const myToken = "planetkids";
   if (mode && tokan) {
     if (mode === "subscribe" && tokan === myToken) {
