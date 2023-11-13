@@ -34,7 +34,7 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/webhook", (req, res) => {
+app.get("/webhook", (req, res, next) => {
   console.log("Its Webhook Request");
   let mode = req.query["hub.mode"];
   let challenge = req.query["hub.challenge"];
@@ -47,12 +47,13 @@ app.get("/webhook", (req, res) => {
       res.status(403);
     }
   }
+  next();
 });
 
-app.post("/webhook", (req, res) => {
-  let body_param = req.body;
-  console.log(JSON.stringify(body_param, null, 2));
-});
+// app.post("/webhook", (req, res) => {
+//   let body_param = req.body;
+//   console.log(JSON.stringify(body_param, null, 2));
+// });
 
 // app.get("/log", (req, res) => {
 //   filePath = path.join(__dirname, "access.log");
