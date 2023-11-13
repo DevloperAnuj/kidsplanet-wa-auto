@@ -34,6 +34,13 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/tokan", (req, res) => {
+  console.log("Its Tokan Request");
+  res.status(200).json({
+    success: true,
+  });
+});
+
 // app.get("/log", (req, res) => {
 //   filePath = path.join(__dirname, "access.log");
 //   fs.readFile(filePath, { encoding: "utf-8" }, function (err, data) {
@@ -63,7 +70,7 @@ app.get("/", (req, res) => {
 // });
 
 //Getting Whatsapp Message After Subcribe Free NewsLetter
-app.post("/submit", (req, res, next) => {
+app.post("/submit", async (req, res, next) => {
   setBody = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
@@ -91,28 +98,27 @@ app.post("/submit", (req, res, next) => {
       ],
     },
   };
-  try {
-    axios
-      .post(
-        `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
-        setBody,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.TOKEN}`,
-          },
-        }
-      )
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    res.status(200).json({ success: true });
-  } catch (error) {
-    res.status(407).json({ error: error });
-  }
+
+  await axios
+    .post(
+      `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
+      setBody,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.TOKEN}`,
+        },
+      }
+    )
+    .then(function (response) {
+      console.log(response);
+      res.status(200).json({ success: response.data });
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(407).send({ error: error });
+    });
+  next();
 });
 
 app.post("/wsp", (req, res, next) => {
