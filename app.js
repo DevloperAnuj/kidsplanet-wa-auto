@@ -111,11 +111,11 @@ app.post("/submit", async (req, res, next) => {
       }
     )
     .then(function (response) {
-      console.log(response);
+      // console.log(response);
       res.status(200).json({ success: response.data });
     })
     .catch(function (error) {
-      console.log(error);
+      // console.log(error);
       res.status(407).send({ error: error });
     });
   next();
