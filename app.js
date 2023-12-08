@@ -152,29 +152,6 @@ app.post("/submit", async (req, res, next) => {
     subendDate = addDays(1000);
     subName = "Free NewsLetter";
   }
-  const { data, error } = await supabase
-    .from("users")
-    .select("name,phone,email")
-    .eq("phone", req.body["Phone"])
-    .single();
-  if (data === null) {
-    console.log("User is New Inserting Now");
-    const { error } = await supabase.from("users").insert({
-      name: req.body["Name"],
-      phone: req.body["Phone"],
-      email: req.body["Email"],
-      addr: req.body["Address"],
-      subend: subendDate,
-      payid: subName,
-    });
-  } else {
-    console.log("User is Available Updating It");
-    const { error } = await supabase
-      .from("users")
-      .update({ subend: subendDate })
-      .eq("phone", req.body["Phone"]);
-  }
-
   setBody = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
@@ -202,6 +179,28 @@ app.post("/submit", async (req, res, next) => {
       ],
     },
   };
+  const { data, error } = await supabase
+    .from("users")
+    .select("name,phone,email")
+    .eq("phone", req.body["Phone"])
+    .single();
+  if (data === null) {
+    console.log("User is New Inserting Now");
+    const { error } = await supabase.from("users").insert({
+      name: req.body["Name"],
+      phone: req.body["Phone"],
+      email: req.body["Email"],
+      addr: req.body["Address"],
+      subend: subendDate,
+      payid: subName,
+    });
+  } else {
+    console.log("User is Available Updating It");
+    const { error } = await supabase
+      .from("users")
+      .update({ subend: subendDate })
+      .eq("phone", req.body["Phone"]);
+  }
 
   //>>>>>>>>>>>>> WHATSAPP ALERT <<<<<<<<<<<//
   await axios
