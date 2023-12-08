@@ -152,14 +152,14 @@ app.post("/submit", async (req, res, next) => {
     subendDate = addDays(1000);
     subName = "Free NewsLetter";
   }
-  await supabase
+  const { data, error } = await supabase
     .from("users")
     .select("name,phone,email")
     .eq("phone", req.body["Phone"])
     .single();
   if (data === null) {
     console.log("User is New Inserting Now");
-    await supabase.from("users").insert({
+    const { error } = await supabase.from("users").insert({
       name: req.body["Name"],
       phone: req.body["Phone"],
       email: req.body["Email"],
@@ -169,11 +169,12 @@ app.post("/submit", async (req, res, next) => {
     });
   } else {
     console.log("User is Available Updating It");
-    await supabase
+    const { error } = await supabase
       .from("users")
       .update({ subend: subendDate })
       .eq("phone", req.body["Phone"]);
   }
+
   setBody = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
