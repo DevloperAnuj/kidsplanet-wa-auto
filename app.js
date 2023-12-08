@@ -113,25 +113,25 @@ app.post("/submit", async (req, res, next) => {
   };
 
   //>>>>>>>>>>>>> WHATSAPP ALERT <<<<<<<<<<<//
-  // await axios
-  //   .post(
-  //     `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
-  //     setBody,
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${process.env.TOKEN}`,
-  //       },
-  //     }
-  //   )
-  //   .then(function (response) {
-  //     // console.log(response);
-  //     res.status(200).json({ success: response.data });
-  //   })
-  //   .catch(function (error) {
-  //     console.log(error);
-  //     res.status(407).send({ error: error });
-  //   });
+  await axios
+    .post(
+      `https://graph.facebook.com/v17.0/${process.env.PHONEID}/messages`,
+      setBody,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.TOKEN}`,
+        },
+      }
+    )
+    .then(function (response) {
+      // console.log(response);
+      res.status(200).json({ success: response.data });
+    })
+    .catch(function (error) {
+      console.log(error);
+      res.status(407).send({ error: error });
+    });
   next();
 });
 
