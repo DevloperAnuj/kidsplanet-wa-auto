@@ -83,6 +83,7 @@ app.get("/webhook", (req, res, next) => {
 
 //Getting Whatsapp Message After Subcribe Free NewsLetter
 app.post("/submit", async (req, res, next) => {
+  console.log(req.body);
   setBody = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
