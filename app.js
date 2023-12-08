@@ -1,3 +1,6 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
 require("dotenv").config();
 // const fs = require("fs");
 // const path = require("path");
@@ -6,6 +9,14 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 // const createCsvWriter = require("csv-writer").createObjectCsvWriter;
+
+import { createClient } from "@supabase/supabase-js";
+
+// Create a single supabase client for interacting with your database
+const supabase = createClient(
+  "https://acmbsmfndayyqsbcaegs.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjbWJzbWZuZGF5eXFzYmNhZWdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDE0MjE4MjksImV4cCI6MjAxNjk5NzgyOX0.dAvj7X4bOPLLJOprsyi4ZjSrbOMISt6WwvPIHDTkbms"
+);
 
 const port = process.env.PORT;
 
@@ -81,9 +92,88 @@ app.get("/webhook", (req, res, next) => {
 //   });
 // });
 
+function addDays(days) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  console.log(date);
+  return date;
+}
+
+//Get My User from Number
+app.get("/isuser/:number", async (req, res) => {
+  console.log("Its Check User Request");
+  var subendDate = null;
+  if (req.params.number === "df748f4") {
+    subendDate = addDays(30);
+  } else if (req.params.number === "bbd2f7b") {
+    subendDate = addDays(180);
+  } else {
+    subendDate = addDays(365);
+  }
+  const { data, error } = await supabase
+    .from("users")
+    .select("name, phone,email")
+    .eq("phone", req.params.number)
+    .single();
+  if (data === null) {
+    console.log("Data is Null");
+    const { error } = await supabase.from("users").insert({
+      name: "Denmark",
+      phone: req.params.number,
+      email: "req@email.com",
+      addr: "req Address Here",
+      subend: subendDate,
+    });
+  } else {
+    console.log("Data is Available");
+    const { error } = await supabase
+      .from("users")
+      .update({ subend: subendDate })
+      .eq("phone", req.params.number);
+  }
+});
+
 //Getting Whatsapp Message After Subcribe Free NewsLetter
 app.post("/submit", async (req, res, next) => {
   console.log(req.body);
+  console.log("Its Check User Request");
+  var subendDate = null;
+  var subName = null;
+  if (req.body["form_id"] === "df748f4") {
+    subendDate = addDays(30);
+    subName = "3 Months";
+  } else if (req.body["form_id"] === "bbd2f7b") {
+    subendDate = addDays(180);
+    subName = "6 Months";
+  } else if (req.body["form_id"] === "0a0bfd2") {
+    subendDate = addDays(365);
+    subName = "1 Year";
+  } else {
+    subendDate = addDays(1000);
+    subName = "Free NewsLetter";
+  }
+  await supabase
+    .from("users")
+    .select("name,phone,email")
+    .eq("phone", req.body["Phone"])
+    .single();
+  if (data === null) {
+    console.log("User is New Inserting Now");
+    await supabase.from("users").insert({
+      name: req.body["Name"],
+      phone: req.body["Phone"],
+      email: req.body["Email"],
+      addr: req.body["Address"],
+      subend: subendDate,
+      payid: subName,
+    });
+  } else {
+    console.log("User is Available Updating It");
+    await supabase
+      .from("users")
+      .update({ subend: subendDate })
+      .eq("phone", req.body["Phone"]);
+  }
   setBody = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
@@ -104,7 +194,7 @@ app.post("/submit", async (req, res, next) => {
             },
             {
               type: "text",
-              text: "Free NewsLetter",
+              text: subName,
             },
           ],
         },
