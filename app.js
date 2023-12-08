@@ -152,7 +152,7 @@ app.post("/submit", async (req, res, next) => {
     subendDate = addDays(1000);
     subName = "Free NewsLetter";
   }
-  setBody = {
+  var setBody = {
     messaging_product: "whatsapp",
     recipient_type: "individual",
     to: `91${req.body["Phone"]}`,
