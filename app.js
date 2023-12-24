@@ -140,7 +140,7 @@ app.post("/submit", async (req, res, next) => {
   var subendDate = null;
   var subName = null;
   if (req.body["form_id"] === "df748f4") {
-    subendDate = addDays(30);
+    subendDate = addDays(90);
     subName = "3 Months";
   } else if (req.body["form_id"] === "bbd2f7b") {
     subendDate = addDays(180);
